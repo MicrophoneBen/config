@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <property name="log.context.name" value="viid-service" />
+    <property name="log.charset" value="UTF-8"/>
+    <property name="log.basedir" value="../logs"/>  <!-- 日志文件存储位置 -->
+    <property name="FILE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS, Asia/Shanghai} [%t] %-5level %logger{50} [%file : %line] - %msg%n"/>
+    <property name="LOG_PATH" value="${LOG_PATH:-${LOG_TEMP:-${log.basedir:-${java.io.tmpdir:-/tmp}}}/}"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH}${log.context.name}.log}"/>
+    <contextName>${log.context.name}</contextName>
+
+    <appender name="RollingFile"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ALL</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}
+            </fileNamePattern>
+            <!-- keep 10 days' worth of history capped at 3GB total size -->
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoder的默认实现类是ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="com.pci" />
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
